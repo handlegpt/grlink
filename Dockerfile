@@ -23,8 +23,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm install --production
+# Install production dependencies and type definitions
+RUN npm install --production && \
+    npm install --save-dev @types/node @types/express @types/cors @types/mongoose
 
 # Copy built files from builder
 COPY --from=builder /app/dist ./dist

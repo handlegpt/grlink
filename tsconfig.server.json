@@ -13,7 +13,9 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["node", "express", "cors", "dotenv", "mongoose"]
+    "types": ["node", "express", "cors", "dotenv", "mongoose"],
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "include": ["src/server/**/*"],
   "exclude": ["node_modules", "src/client"]
