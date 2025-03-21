@@ -15,7 +15,9 @@
     },
     "types": ["node", "express", "cors", "dotenv", "mongoose"],
     "allowJs": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "declaration": true
   },
   "include": ["src/server/**/*"],
   "exclude": ["node_modules", "src/client"]

@@ -13,7 +13,14 @@ RUN npm install
 COPY . .
 
 # Build server and client
-RUN npm run build:server && npm run build:client
+RUN echo "Building server..." && \
+    npm run build:server && \
+    echo "Server build complete. Checking dist directory:" && \
+    ls -la dist/server && \
+    echo "Building client..." && \
+    npm run build:client && \
+    echo "Client build complete. Checking dist directory:" && \
+    ls -la dist
 
 # Production stage
 FROM node:18-alpine
