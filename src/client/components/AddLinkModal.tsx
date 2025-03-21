@@ -104,7 +104,7 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSubmit }
                 color: selectedTemplate.color,
                 clicks: 0,
                 order: 0,
-                createdAt: new Date()
+                createdAt: new Date().toISOString()
               }}
               onSubmit={handleSubmit}
               onCancel={() => setSelectedTemplate(null)}

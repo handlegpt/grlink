@@ -5,7 +5,7 @@ import { linkApi } from '../services/api'
 const router = express.Router()
 
 // 获取所有链接
-router.get('/', async (req, res) => {
+router.get('/', async (_req, res) => {
   try {
     const links = await linkApi.getAll()
     res.json(links)
