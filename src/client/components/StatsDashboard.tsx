@@ -91,178 +91,73 @@ const StatsDashboard = () => {
     setActiveIndex(null)
   }
 
-  const renderChart = () => {
-    const data = stats.links.map(link => ({
-      name: link.name,
-      value: link.clicks,
-      color: link.color
-    }))
+  const renderBarChart = () => (
+    <BarChart
+      data={stats}
+      margin={isMobile ? { top: 20, right: 30, left: 20, bottom: 5 } : { top: 20, right: 30, left: 20, bottom: 5 }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis
+        dataKey="date"
+        angle={isMobile ? -45 : 0}
+        textAnchor={isMobile ? "end" : "middle"}
+        height={isMobile ? 60 : 30}
+        interval={isMobile ? 1 : 0}
+      />
+      <YAxis />
+      <Tooltip />
+      <Bar dataKey="clicks" fill="#8884d8" />
+    </BarChart>
+  )
 
-    const currentTheme = THEMES[theme]
-    const currentColors = COLOR_SCHEMES[colorScheme]
+  const renderPieChart = () => (
+    <PieChart width={isMobile ? 300 : 400} height={isMobile ? 300 : 400}>
+      <Pie
+        data={stats}
+        dataKey="clicks"
+        nameKey="date"
+        cx="50%"
+        cy="50%"
+        outerRadius={isMobile ? 100 : 150}
+        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+      >
+        {stats.map((_, index) => (
+          <Cell key={`cell-${index}`} fill={COLOR_SCHEMES[colorScheme][index % COLOR_SCHEMES[colorScheme].length]} />
+        ))}
+      </Pie>
+      <Tooltip />
+    </PieChart>
+  )
 
-    const commonProps = {
-      data,
-      margin: { top: 20, right: isMobile ? 10 : 30, left: isMobile ? 0 : 20, bottom: 5 },
-      style: { color: currentTheme.text }
-    }
+  const renderLineChart = () => (
+    <LineChart
+      data={stats}
+      margin={isMobile ? { top: 20, right: 30, left: 20, bottom: 5 } : { top: 20, right: 30, left: 20, bottom: 5 }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis
+        dataKey="date"
+        angle={isMobile ? -45 : 0}
+        textAnchor={isMobile ? "end" : "middle"}
+        height={isMobile ? 60 : 30}
+        interval={isMobile ? 1 : 0}
+      />
+      <YAxis />
+      <Tooltip />
+      <Line type="monotone" dataKey="clicks" stroke="#8884d8" />
+    </LineChart>
+  )
 
+  const renderChart = (): JSX.Element => {
     switch (chartType) {
       case 'bar':
-        return (
-          <BarChart {...commonProps}>
-            {showGrid && <CartesianGrid strokeDasharray="3 3" stroke={currentTheme.grid} />}
-            <XAxis
-              dataKey="name"
-              angle={isMobile ? -60 : -45}
-              textAnchor="end"
-              height={isMobile ? 80 : 60}
-              interval={0}
-              tick={{ fontSize: isMobile ? 10 : 12, fill: currentTheme.text }}
-            />
-            <YAxis tick={{ fontSize: isMobile ? 10 : 12, fill: currentTheme.text }} />
-            <Tooltip
-              contentStyle={{
-                fontSize: isMobile ? '12px' : '14px',
-                padding: isMobile ? '8px' : '12px',
-                backgroundColor: currentTheme.tooltip,
-                border: 'none',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                color: currentTheme.text
-              }}
-              animationDuration={300}
-            />
-            <Bar
-              dataKey="value"
-              fill="#8884d8"
-              animationDuration={1000}
-              radius={[4, 4, 0, 0]}
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={currentColors[index % currentColors.length]}
-                  opacity={activeIndex === null || activeIndex === index ? 1 : 0.5}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  onMouseLeave={() => setActiveIndex(null)}
-                />
-              ))}
-            </Bar>
-            {showLegend && (
-              <Legend
-                verticalAlign="bottom"
-                height={36}
-                wrapperStyle={{
-                  fontSize: isMobile ? '10px' : '12px',
-                  color: currentTheme.text
-                }}
-              />
-            )}
-          </BarChart>
-        )
+        return renderBarChart()
       case 'pie':
-        return (
-          <PieChart {...commonProps}>
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={isMobile ? 80 : 100}
-              label={{ fontSize: isMobile ? 10 : 12, fill: currentTheme.text }}
-              animationDuration={1000}
-              animationBegin={0}
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={currentColors[index % currentColors.length]}
-                  onMouseEnter={onPieEnter}
-                  onMouseLeave={onPieLeave}
-                  style={{
-                    cursor: 'pointer',
-                    opacity: activeIndex === null || activeIndex === index ? 1 : 0.5,
-                    transform: activeIndex === index ? 'scale(1.1)' : 'scale(1)',
-                    transition: 'all 0.3s ease'
-                  }}
-                />
-              ))}
-            </Pie>
-            <Tooltip
-              contentStyle={{
-                fontSize: isMobile ? '12px' : '14px',
-                padding: isMobile ? '8px' : '12px',
-                backgroundColor: currentTheme.tooltip,
-                border: 'none',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                color: currentTheme.text
-              }}
-              animationDuration={300}
-            />
-            {showLegend && (
-              <Legend
-                verticalAlign="bottom"
-                height={36}
-                wrapperStyle={{
-                  fontSize: isMobile ? '10px' : '12px',
-                  color: currentTheme.text
-                }}
-              />
-            )}
-          </PieChart>
-        )
+        return renderPieChart()
       case 'line':
-        return (
-          <LineChart {...commonProps}>
-            {showGrid && <CartesianGrid strokeDasharray="3 3" stroke={currentTheme.grid} />}
-            <XAxis
-              dataKey="name"
-              angle={isMobile ? -60 : -45}
-              textAnchor="end"
-              height={isMobile ? 80 : 60}
-              interval={0}
-              tick={{ fontSize: isMobile ? 10 : 12, fill: currentTheme.text }}
-            />
-            <YAxis tick={{ fontSize: isMobile ? 10 : 12, fill: currentTheme.text }} />
-            <Tooltip
-              contentStyle={{
-                fontSize: isMobile ? '12px' : '14px',
-                padding: isMobile ? '8px' : '12px',
-                backgroundColor: currentTheme.tooltip,
-                border: 'none',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                color: currentTheme.text
-              }}
-              animationDuration={300}
-            />
-            <Line
-              type="monotone"
-              dataKey="value"
-              stroke={currentColors[0]}
-              strokeWidth={isMobile ? 1.5 : 2}
-              animationDuration={1000}
-              animationBegin={0}
-              dot={{ r: 4, strokeWidth: 2, fill: currentColors[0] }}
-              activeDot={{ r: 6, strokeWidth: 2, fill: currentColors[0] }}
-            />
-            {showLegend && (
-              <Legend
-                verticalAlign="bottom"
-                height={36}
-                wrapperStyle={{
-                  fontSize: isMobile ? '10px' : '12px',
-                  color: currentTheme.text
-                }}
-              />
-            )}
-          </LineChart>
-        )
+        return renderLineChart()
       default:
-        return null
+        return renderBarChart()
     }
   }
 

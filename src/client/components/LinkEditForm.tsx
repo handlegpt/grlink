@@ -14,9 +14,21 @@ interface LinkEditFormProps {
   placeholder?: string
 }
 
-const LinkEditForm = ({ initialData, onSubmit, onCancel, placeholder }: LinkEditFormProps) => {
+interface LinkFormData {
+  name: string;
+  url: string;
+  icon: string;
+  color: string;
+}
+
+const LinkEditForm: React.FC<LinkEditFormProps> = ({ initialData, onSubmit, onCancel, placeholder }) => {
   const { t } = useTranslation()
-  const [formData, setFormData] = useState(initialData)
+  const [formData, setFormData] = useState<LinkFormData>({
+    name: initialData.name,
+    url: initialData.url,
+    icon: initialData.icon,
+    color: initialData.color
+  })
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
@@ -30,7 +42,10 @@ const LinkEditForm = ({ initialData, onSubmit, onCancel, placeholder }: LinkEdit
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    onSubmit({
+      ...initialData,
+      ...formData
+    })
   }
 
   return (

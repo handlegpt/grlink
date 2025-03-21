@@ -7,7 +7,9 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  LineChart,
+  Line
 } from 'recharts'
 import { Link } from '../services/api'
 
@@ -15,9 +17,10 @@ interface ClickStatsChartProps {
   links: Link[]
 }
 
-const ClickStatsChart = ({ links }: ClickStatsChartProps) => {
+const ClickStatsChart: React.FC<ClickStatsChartProps> = ({ links }) => {
   const { t } = useTranslation()
   const [isMobile, setIsMobile] = useState(false)
+  const [chartType, setChartType] = useState<'bar' | 'line'>('bar')
 
   useEffect(() => {
     const checkMobile = () => {
@@ -52,21 +55,31 @@ const ClickStatsChart = ({ links }: ClickStatsChartProps) => {
   }
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {t('profile.topLinks')}
-      </h3>
-      <div className="h-[300px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
+    <div className="bg-white rounded-lg shadow p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">{t('stats.title')}</h3>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setChartType('bar')}
+            className={`px-3 py-1 rounded ${
+              chartType === 'bar' ? 'bg-blue-500 text-white' : 'bg-gray-100'
+            }`}
           >
+            {t('chartTypes.bar')}
+          </button>
+          <button
+            onClick={() => setChartType('line')}
+            className={`px-3 py-1 rounded ${
+              chartType === 'line' ? 'bg-blue-500 text-white' : 'bg-gray-100'
+            }`}
+          >
+            {t('chartTypes.line')}
+          </button>
+        </div>
+      </div>
+      <div className="h-64">
+        {chartType === 'bar' ? (
+          <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="name"
@@ -99,7 +112,29 @@ const ClickStatsChart = ({ links }: ClickStatsChartProps) => {
               ))}
             </Bar>
           </BarChart>
-        </ResponsiveContainer>
+        ) : (
+          <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="name"
+              angle={-45}
+              textAnchor="end"
+              height={60}
+              interval={0}
+              tick={{ fontSize: 12 }}
+            />
+            <YAxis />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                border: 'none',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+            />
+            <Line type="monotone" dataKey="clicks" stroke="#8884d8" activeDot={{ r: 8 }} />
+          </LineChart>
+        )}
       </div>
     </div>
   )
