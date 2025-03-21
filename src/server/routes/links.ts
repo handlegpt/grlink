@@ -7,62 +7,40 @@ const router = express.Router()
 // 获取所有链接
 router.get('/', async (req, res) => {
   try {
-    const links = await Link.find().sort({ order: 1 })
+    const links = await linkApi.getAll()
     res.json(links)
   } catch (error) {
-    res.status(500).json({ message: '获取链接失败' })
+    res.status(500).json({ error: '获取链接失败' })
   }
 })
 
 // 创建新链接
 router.post('/', async (req, res) => {
   try {
-    const link = new Link(req.body)
-    await link.save()
+    const link = await linkApi.create(req.body)
     res.status(201).json(link)
   } catch (error) {
-    res.status(400).json({ message: '创建链接失败' })
+    res.status(500).json({ error: '创建链接失败' })
   }
 })
 
 // 更新链接
 router.put('/:id', async (req, res) => {
   try {
-    const link = await Link.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    if (!link) {
-      return res.status(404).json({ message: '链接不存在' })
-    }
+    const link = await linkApi.update(req.params.id, req.body)
     res.json(link)
   } catch (error) {
-    res.status(400).json({ message: '更新链接失败' })
+    res.status(500).json({ error: '更新链接失败' })
   }
 })
 
 // 删除链接
 router.delete('/:id', async (req, res) => {
   try {
-    const link = await Link.findByIdAndDelete(req.params.id)
-    if (!link) {
-      return res.status(404).json({ message: '链接不存在' })
-    }
-    res.json({ message: '链接已删除' })
+    await linkApi.delete(req.params.id)
+    res.status(204).send()
   } catch (error) {
-    res.status(400).json({ message: '删除链接失败' })
-  }
-})
-
-// 记录点击
-router.post('/:id/click', async (req, res) => {
-  try {
-    const link = await Link.findById(req.params.id)
-    if (!link) {
-      return res.status(404).json({ message: '链接不存在' })
-    }
-    link.clicks += 1
-    await link.save()
-    res.json(link)
-  } catch (error) {
-    res.status(400).json({ message: '记录点击失败' })
+    res.status(500).json({ error: '删除链接失败' })
   }
 })
 
@@ -70,17 +48,20 @@ router.post('/:id/click', async (req, res) => {
 router.put('/:id/reorder', async (req, res) => {
   try {
     const { order } = req.body
-    const link = await Link.findByIdAndUpdate(
-      req.params.id,
-      { order },
-      { new: true }
-    )
-    if (!link) {
-      return res.status(404).json({ message: '链接不存在' })
-    }
+    const link = await linkApi.update(req.params.id, { order })
     res.json(link)
   } catch (error) {
-    res.status(400).json({ message: '更新链接顺序失败' })
+    res.status(500).json({ error: '更新链接顺序失败' })
+  }
+})
+
+// 记录链接点击
+router.post('/:id/click', async (req, res) => {
+  try {
+    const link = await linkApi.recordClick(req.params.id)
+    res.json(link)
+  } catch (error) {
+    res.status(500).json({ error: '记录点击失败' })
   }
 })
 

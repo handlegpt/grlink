@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from '../services/api'
 import {
   BarChart,
   Bar,
@@ -7,160 +8,114 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   PieChart,
   Pie,
   Cell,
   LineChart,
   Line
 } from 'recharts'
-import { Link } from '../services/api'
-
-interface LinkStats {
-  name: string
-  clicks: number
-  color: string
-}
 
 interface StatsDashboardProps {
   links: Link[]
 }
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
+
 const StatsDashboard: React.FC<StatsDashboardProps> = ({ links }) => {
   const { t } = useTranslation()
   const [chartType, setChartType] = useState<'bar' | 'pie' | 'line'>('bar')
 
-  const data: LinkStats[] = links
-    .sort((a, b) => b.clicks - a.clicks)
-    .map(link => ({
-      name: link.name,
-      clicks: link.clicks,
-      color: link.color
-    }))
+  const data = links.map(link => ({
+    name: link.name,
+    clicks: link.clicks,
+    value: link.clicks
+  }))
 
   const renderBarChart = () => (
-    <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+    <BarChart width={600} height={300} data={data}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-        dataKey="name"
-        angle={-45}
-        textAnchor="end"
-        height={60}
-        interval={0}
-        tick={{ fontSize: 12 }}
-      />
+      <XAxis dataKey="name" />
       <YAxis />
-      <Tooltip
-        contentStyle={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          border: 'none',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}
-      />
-      <Bar dataKey="clicks" fill="#8884d8">
-        {data.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={entry.color} />
-        ))}
-      </Bar>
+      <Tooltip />
+      <Legend />
+      <Bar dataKey="clicks" fill="#8884d8" />
     </BarChart>
   )
 
   const renderPieChart = () => (
-    <PieChart>
+    <PieChart width={400} height={300}>
       <Pie
         data={data}
-        dataKey="clicks"
-        nameKey="name"
-        cx="50%"
-        cy="50%"
-        outerRadius={100}
-        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+        cx={200}
+        cy={150}
+        labelLine={false}
+        outerRadius={80}
+        fill="#8884d8"
+        dataKey="value"
       >
         {data.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={entry.color} />
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>
-      <Tooltip
-        contentStyle={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          border: 'none',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}
-      />
+      <Tooltip />
+      <Legend />
     </PieChart>
   )
 
   const renderLineChart = () => (
-    <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+    <LineChart width={600} height={300} data={data}>
       <CartesianGrid strokeDasharray="3 3" />
-      <XAxis
-        dataKey="name"
-        angle={-45}
-        textAnchor="end"
-        height={60}
-        interval={0}
-        tick={{ fontSize: 12 }}
-      />
+      <XAxis dataKey="name" />
       <YAxis />
-      <Tooltip
-        contentStyle={{
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          border: 'none',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}
-      />
-      <Line type="monotone" dataKey="clicks" stroke="#8884d8" activeDot={{ r: 8 }} />
+      <Tooltip />
+      <Legend />
+      <Line type="monotone" dataKey="clicks" stroke="#8884d8" />
     </LineChart>
   )
 
-  const renderChart = () => {
-    switch (chartType) {
-      case 'bar':
-        return renderBarChart()
-      case 'pie':
-        return renderPieChart()
-      case 'line':
-        return renderLineChart()
-      default:
-        return renderBarChart()
-    }
-  }
-
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">{t('stats.title')}</h3>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">{t('stats.title')}</h2>
         <div className="flex space-x-2">
           <button
             onClick={() => setChartType('bar')}
-            className={`px-3 py-1 rounded ${
-              chartType === 'bar' ? 'bg-blue-500 text-white' : 'bg-gray-100'
+            className={`px-4 py-2 rounded ${
+              chartType === 'bar'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700'
             }`}
           >
-            {t('chartTypes.bar')}
+            {t('stats.bar')}
           </button>
           <button
             onClick={() => setChartType('pie')}
-            className={`px-3 py-1 rounded ${
-              chartType === 'pie' ? 'bg-blue-500 text-white' : 'bg-gray-100'
+            className={`px-4 py-2 rounded ${
+              chartType === 'pie'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700'
             }`}
           >
-            {t('chartTypes.pie')}
+            {t('stats.pie')}
           </button>
           <button
             onClick={() => setChartType('line')}
-            className={`px-3 py-1 rounded ${
-              chartType === 'line' ? 'bg-blue-500 text-white' : 'bg-gray-100'
+            className={`px-4 py-2 rounded ${
+              chartType === 'line'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700'
             }`}
           >
-            {t('chartTypes.line')}
+            {t('stats.line')}
           </button>
         </div>
       </div>
-      <div className="h-64">
-        {renderChart()}
+
+      <div className="bg-white p-6 rounded-lg shadow">
+        {chartType === 'bar' && renderBarChart()}
+        {chartType === 'pie' && renderPieChart()}
+        {chartType === 'line' && renderLineChart()}
       </div>
     </div>
   )

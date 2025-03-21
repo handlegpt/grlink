@@ -1,6 +1,16 @@
-import mongoose from 'mongoose'
+import mongoose, { Document } from 'mongoose'
 
-const linkSchema = new mongoose.Schema({
+export interface ILink extends Document {
+  name: string
+  url: string
+  icon: string
+  color: string
+  clicks: number
+  order: number
+  createdAt: Date
+}
+
+const linkSchema = new mongoose.Schema<ILink>({
   name: {
     type: String,
     required: true
@@ -31,4 +41,4 @@ const linkSchema = new mongoose.Schema({
   }
 })
 
-export const Link = mongoose.model('Link', linkSchema) 
+export const Link = mongoose.model<ILink>('Link', linkSchema) 

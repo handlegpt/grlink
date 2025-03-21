@@ -14,10 +14,9 @@ interface LinkEditFormProps {
   link: Link
   onSubmit: (data: Link) => void
   onCancel: () => void
-  placeholder?: string
 }
 
-const LinkEditForm: React.FC<LinkEditFormProps> = ({ link, onSubmit, onCancel, placeholder }) => {
+const LinkEditForm: React.FC<LinkEditFormProps> = ({ link, onSubmit, onCancel }) => {
   const { t } = useTranslation()
   const [formData, setFormData] = useState<LinkFormData>({
     name: link.name,
@@ -25,7 +24,6 @@ const LinkEditForm: React.FC<LinkEditFormProps> = ({ link, onSubmit, onCancel, p
     icon: link.icon,
     color: link.color
   })
-  const [isMobile, setIsMobile] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -86,21 +84,17 @@ const LinkEditForm: React.FC<LinkEditFormProps> = ({ link, onSubmit, onCancel, p
             required
           />
         </div>
-        <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'justify-end space-x-3'}`}>
+        <div className="flex justify-end space-x-3">
           <button
             type="button"
             onClick={onCancel}
-            className={`px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 ${
-              isMobile ? 'w-full' : ''
-            }`}
+            className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
           >
             {t('common.cancel')}
           </button>
           <button
             type="submit"
-            className={`px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 ${
-              isMobile ? 'w-full' : ''
-            }`}
+            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
           >
             {t('common.save')}
           </button>
@@ -111,7 +105,16 @@ const LinkEditForm: React.FC<LinkEditFormProps> = ({ link, onSubmit, onCancel, p
         <h3 className="text-sm font-medium text-gray-700 mb-2">
           {t('profile.preview')}
         </h3>
-        <LinkPreview {...formData} />
+        <LinkPreview
+          _id={link._id}
+          name={formData.name}
+          url={formData.url}
+          icon={formData.icon}
+          color={formData.color}
+          clicks={link.clicks}
+          order={link.order}
+          createdAt={link.createdAt}
+        />
       </div>
     </div>
   )

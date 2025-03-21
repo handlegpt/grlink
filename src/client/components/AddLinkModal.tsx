@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LinkTemplate, linkTemplates } from '../config/linkTemplates'
 import LinkEditForm from './LinkEditForm'
+import { Link } from '../services/api'
 
 interface AddLinkModalProps {
+  isOpen: boolean
   onClose: () => void
-  onSubmit: (data: { name: string; url: string; icon: string; color: string }) => void
+  onSubmit: (data: Link) => void
 }
 
-const AddLinkModal = ({ onClose, onSubmit }: AddLinkModalProps) => {
+const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const { t } = useTranslation()
   const [selectedTemplate, setSelectedTemplate] = useState<LinkTemplate | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -32,7 +34,7 @@ const AddLinkModal = ({ onClose, onSubmit }: AddLinkModalProps) => {
   }
 
   const handleSubmit = (data: { name: string; url: string; icon: string; color: string }) => {
-    onSubmit(data)
+    onSubmit(data as Link)
     onClose()
   }
 
@@ -41,6 +43,8 @@ const AddLinkModal = ({ onClose, onSubmit }: AddLinkModalProps) => {
       onClose()
     }
   }
+
+  if (!isOpen) return null
 
   return (
     <div 

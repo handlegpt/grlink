@@ -1,42 +1,33 @@
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Link } from '../services/api'
-import axios from 'axios'
 
-interface LinkPreviewProps extends Link {
-  onClicksUpdate?: (clicks: number) => void
-}
+interface LinkPreviewProps extends Link {}
 
-const LinkPreview: React.FC<LinkPreviewProps> = ({ _id, name, url, icon, color, clicks }) => {
-  const { t } = useTranslation()
-
-  const handleClick = async () => {
-    try {
-      await axios.post(`/api/links/${_id}/click`)
-      window.open(url, '_blank')
-    } catch (error) {
-      console.error('Error recording click:', error)
-    }
-  }
-
+const LinkPreview: React.FC<LinkPreviewProps> = ({
+  name,
+  url,
+  icon,
+  color,
+  clicks,
+  order,
+  createdAt
+}) => {
   return (
-    <div className="relative group">
-      <button
-        onClick={handleClick}
-        className="w-full flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
-        style={{ borderLeft: `4px solid ${color}` }}
-      >
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 flex items-center justify-center rounded-full" style={{ backgroundColor: color + '20' }}>
-            <i className={icon} style={{ color }}></i>
-          </div>
-          <span className="text-gray-800 font-medium">{name}</span>
+    <div
+      className="flex items-center p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+      style={{ backgroundColor: color + '20' }}
+    >
+      <div className="flex-shrink-0">
+        <i className={`${icon} text-2xl`} style={{ color }} />
+      </div>
+      <div className="ml-4 flex-grow">
+        <h3 className="text-lg font-medium">{name}</h3>
+        <p className="text-sm text-gray-500">{url}</p>
+        <div className="mt-2 text-xs text-gray-400">
+          <span>点击次数: {clicks}</span>
+          <span className="mx-2">|</span>
+          <span>创建时间: {new Date(createdAt).toLocaleDateString()}</span>
         </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-500">{clicks} {t('clicks')}</span>
-          <i className="fas fa-chevron-right text-gray-400"></i>
-        </div>
-      </button>
+      </div>
     </div>
   )
 }
