@@ -1,49 +1,36 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from '../services/api'
 import LinkPreview from './LinkPreview'
 
+interface LinkFormData {
+  name: string
+  url: string
+  icon: string
+  color: string
+}
+
 interface LinkEditFormProps {
-  initialData: {
-    name: string
-    url: string
-    icon: string
-    color: string
-  }
-  onSubmit: (data: { name: string; url: string; icon: string; color: string }) => void
+  link: Link
+  onSubmit: (data: Link) => void
   onCancel: () => void
   placeholder?: string
 }
 
-interface LinkFormData {
-  name: string;
-  url: string;
-  icon: string;
-  color: string;
-}
-
-const LinkEditForm: React.FC<LinkEditFormProps> = ({ initialData, onSubmit, onCancel, placeholder }) => {
+const LinkEditForm: React.FC<LinkEditFormProps> = ({ link, onSubmit, onCancel, placeholder }) => {
   const { t } = useTranslation()
   const [formData, setFormData] = useState<LinkFormData>({
-    name: initialData.name,
-    url: initialData.url,
-    icon: initialData.icon,
-    color: initialData.color
+    name: link.name,
+    url: link.url,
+    icon: link.icon,
+    color: link.color
   })
   const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit({
-      ...initialData,
+      ...link,
       ...formData
     })
   }
@@ -52,32 +39,53 @@ const LinkEditForm: React.FC<LinkEditFormProps> = ({ initialData, onSubmit, onCa
     <div className="space-y-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('profile.linkName')}
+          <label className="block text-sm font-medium text-gray-700">
+            {t('form.name')}
           </label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             required
           />
         </div>
-
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('profile.linkUrl')}
+          <label className="block text-sm font-medium text-gray-700">
+            {t('form.url')}
           </label>
           <input
             type="url"
             value={formData.url}
             onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder={placeholder || 'https://'}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             required
           />
         </div>
-
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            {t('form.icon')}
+          </label>
+          <input
+            type="text"
+            value={formData.icon}
+            onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            {t('form.color')}
+          </label>
+          <input
+            type="color"
+            value={formData.color}
+            onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+            className="mt-1 block w-full h-10 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            required
+          />
+        </div>
         <div className={`flex ${isMobile ? 'flex-col space-y-2' : 'justify-end space-x-3'}`}>
           <button
             type="button"

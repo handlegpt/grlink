@@ -7,7 +7,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
   LineChart,
   Line
 } from 'recharts'
@@ -19,17 +18,7 @@ interface ClickStatsChartProps {
 
 const ClickStatsChart: React.FC<ClickStatsChartProps> = ({ links }) => {
   const { t } = useTranslation()
-  const [isMobile, setIsMobile] = useState(false)
   const [chartType, setChartType] = useState<'bar' | 'line'>('bar')
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   const data = links
     .sort((a, b) => b.clicks - a.clicks)

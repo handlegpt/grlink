@@ -1,26 +1,14 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from '../services/api'
-import { linkApi } from '../services/api'
 import axios from 'axios'
 
 interface LinkPreviewProps extends Link {
   onClicksUpdate?: (clicks: number) => void
 }
 
-const LinkPreview: React.FC<LinkPreviewProps> = ({ _id, name, url, icon, color, clicks, onClicksUpdate }) => {
+const LinkPreview: React.FC<LinkPreviewProps> = ({ _id, name, url, icon, color, clicks }) => {
   const { t } = useTranslation()
-  const [isMobile, setIsMobile] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   const handleClick = async () => {
     try {
@@ -32,11 +20,7 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ _id, name, url, icon, color, 
   }
 
   return (
-    <div
-      className="relative group"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="relative group">
       <button
         onClick={handleClick}
         className="w-full flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-200"

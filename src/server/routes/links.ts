@@ -1,5 +1,6 @@
 import express from 'express'
 import { Link } from '../models/Link'
+import { linkApi } from '../services/api'
 
 const router = express.Router()
 
@@ -24,33 +25,34 @@ router.post('/', async (req, res) => {
   }
 })
 
-// 更新链接顺序
-router.put('/order', async (req, res) => {
+// 更新链接
+router.put('/:id', async (req, res) => {
   try {
-    const { linkIds } = req.body
-    await Promise.all(
-      linkIds.map((id: string, index: number) =>
-        Link.findByIdAndUpdate(id, { order: index })
-      )
-    )
-    res.json({ message: '更新顺序成功' })
+    const link = await Link.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    if (!link) {
+      return res.status(404).json({ message: '链接不存在' })
+    }
+    res.json(link)
   } catch (error) {
-    res.status(400).json({ message: '更新顺序失败' })
+    res.status(400).json({ message: '更新链接失败' })
   }
 })
 
 // 删除链接
 router.delete('/:id', async (req, res) => {
   try {
-    await Link.findByIdAndDelete(req.params.id)
-    res.json({ message: '删除链接成功' })
+    const link = await Link.findByIdAndDelete(req.params.id)
+    if (!link) {
+      return res.status(404).json({ message: '链接不存在' })
+    }
+    res.json({ message: '链接已删除' })
   } catch (error) {
     res.status(400).json({ message: '删除链接失败' })
   }
 })
 
-// 增加点击次数
-router.post('/:id/clicks', async (req, res) => {
+// 记录点击
+router.post('/:id/click', async (req, res) => {
   try {
     const link = await Link.findById(req.params.id)
     if (!link) {
@@ -60,7 +62,25 @@ router.post('/:id/clicks', async (req, res) => {
     await link.save()
     res.json(link)
   } catch (error) {
-    res.status(400).json({ message: '更新点击次数失败' })
+    res.status(400).json({ message: '记录点击失败' })
+  }
+})
+
+// 更新链接顺序
+router.put('/:id/reorder', async (req, res) => {
+  try {
+    const { order } = req.body
+    const link = await Link.findByIdAndUpdate(
+      req.params.id,
+      { order },
+      { new: true }
+    )
+    if (!link) {
+      return res.status(404).json({ message: '链接不存在' })
+    }
+    res.json(link)
+  } catch (error) {
+    res.status(400).json({ message: '更新链接顺序失败' })
   }
 })
 
