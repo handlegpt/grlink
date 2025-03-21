@@ -6,9 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies and type definitions
-RUN npm install && \
-    npm install --save-dev @types/react @types/react-dom @types/express @types/mongoose @types/react-i18next
+# Install all dependencies
+RUN npm install
 
 # Copy source code
 COPY . .
@@ -34,4 +33,4 @@ COPY --from=builder /app/dist ./dist
 EXPOSE 3001
 
 # Start the application
-CMD ["npm", "start"] 
+CMD ["node", "dist/server/index.js"] 
