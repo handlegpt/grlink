@@ -1,0 +1,47 @@
+{
+  "home": {
+    "title": "欢迎使用 GrLink",
+    "description": "一个现代化的链接分享平台",
+    "getStarted": "开始使用",
+    "login": "登录"
+  },
+  "profile": {
+    "title": "个人主页",
+    "description": "管理你的个人链接和资料",
+    "links": "我的链接",
+    "addLink": "添加链接",
+    "editLink": "编辑链接",
+    "noLinks": "还没有添加任何链接",
+    "linkName": "链接名称",
+    "linkUrl": "链接地址",
+    "preview": "预览",
+    "selectTemplate": "选择模板",
+    "customLink": "自定义链接",
+    "clicks": "点击",
+    "days": "天",
+    "allTime": "全部时间",
+    "totalClicks": "总点击量",
+    "topLinks": "热门链接",
+    "bio": "个人简介"
+  },
+  "dashboard": {
+    "title": "仪表板",
+    "description": "管理你的个人资料和链接",
+    "links": "链接管理",
+    "stats": "数据统计",
+    "chartTypes": {
+      "bar": "柱状图",
+      "pie": "饼图",
+      "line": "折线图"
+    }
+  },
+  "common": {
+    "edit": "编辑",
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "loading": "加载中...",
+    "error": "出错了",
+    "success": "操作成功"
+  }
+} 
