@@ -1,24 +1,24 @@
-import { Link } from '../models/Link'
+import { ILink, Link } from '../models/Link'
 
 export interface LinkApi {
-  getAll(): Promise<Link[]>
-  create(data: Partial<Link>): Promise<Link>
-  update(id: string, data: Partial<Link>): Promise<Link>
+  getAll(): Promise<ILink[]>
+  create(data: Partial<ILink>): Promise<ILink>
+  update(id: string, data: Partial<ILink>): Promise<ILink>
   delete(id: string): Promise<void>
-  recordClick(id: string): Promise<Link>
+  recordClick(id: string): Promise<ILink>
 }
 
 class LinkApiImpl implements LinkApi {
-  async getAll(): Promise<Link[]> {
+  async getAll(): Promise<ILink[]> {
     return Link.find().sort({ order: 1 })
   }
 
-  async create(data: Partial<Link>): Promise<Link> {
+  async create(data: Partial<ILink>): Promise<ILink> {
     const link = new Link(data)
     return link.save()
   }
 
-  async update(id: string, data: Partial<Link>): Promise<Link> {
+  async update(id: string, data: Partial<ILink>): Promise<ILink> {
     const link = await Link.findByIdAndUpdate(id, data, { new: true })
     if (!link) {
       throw new Error('链接不存在')
@@ -33,7 +33,7 @@ class LinkApiImpl implements LinkApi {
     }
   }
 
-  async recordClick(id: string): Promise<Link> {
+  async recordClick(id: string): Promise<ILink> {
     const link = await Link.findById(id)
     if (!link) {
       throw new Error('链接不存在')

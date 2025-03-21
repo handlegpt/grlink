@@ -66,9 +66,9 @@ router.post('/:id/click', async (req, res) => {
 })
 
 // 获取点击统计数据
-router.get('/stats', async (req, res) => {
+router.get('/stats', async (_req, res) => {
   try {
-    const { startDate, endDate } = req.query
+    const { startDate, endDate } = _req.query
     const query: any = {}
     
     if (startDate && endDate) {

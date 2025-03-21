@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import StatsDashboard from '../components/StatsDashboard'
+import ClickStatsChart from '../components/ClickStatsChart'
 
 const Dashboard = () => {
   const { t } = useTranslation()
@@ -14,7 +15,10 @@ const Dashboard = () => {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             {t('dashboard.stats')}
           </h2>
-          <StatsDashboard />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <StatsDashboard links={links} />
+            <ClickStatsChart links={links} />
+          </div>
         </div>
       </div>
     </div>

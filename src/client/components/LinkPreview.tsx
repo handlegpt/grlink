@@ -8,7 +8,6 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({
   icon,
   color,
   clicks,
-  order,
   createdAt
 }) => {
   return (

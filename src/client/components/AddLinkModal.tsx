@@ -96,15 +96,18 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSubmit }
             </div>
           ) : (
             <LinkEditForm
-              initialData={{
+              link={{
+                _id: '',
                 name: selectedTemplate.name,
                 url: selectedTemplate.urlPrefix || '',
                 icon: selectedTemplate.icon,
-                color: selectedTemplate.color
+                color: selectedTemplate.color,
+                clicks: 0,
+                order: 0,
+                createdAt: new Date()
               }}
               onSubmit={handleSubmit}
               onCancel={() => setSelectedTemplate(null)}
-              placeholder={selectedTemplate.placeholder}
             />
           )}
         </div>

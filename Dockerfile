@@ -6,8 +6,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies and type definitions
+RUN npm install && \
+    npm install --save-dev @types/react @types/react-dom @types/express @types/mongoose @types/react-i18next
 
 # Copy source code
 COPY . .
