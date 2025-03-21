@@ -17,7 +17,8 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
+    "noEmit": false
   },
   "include": ["src/server/**/*"],
   "exclude": ["node_modules", "src/client"]

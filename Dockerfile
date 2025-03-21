@@ -17,6 +17,8 @@ RUN echo "Building server..." && \
     npm run build:server && \
     echo "Server build complete. Checking dist directory:" && \
     ls -la dist/server && \
+    echo "Checking if index.js exists:" && \
+    ls -la dist/server/index.js && \
     echo "Building client..." && \
     npm run build:client && \
     echo "Client build complete. Checking dist directory:" && \
